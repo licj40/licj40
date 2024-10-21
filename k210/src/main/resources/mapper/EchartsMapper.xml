@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.k210.licj.k210.mapper.EchartsMapper">
+
+    <select id="selectNumber" resultType="java.lang.Integer">
+        select count(*) from user where ${typeName}=#{value}
+    </select>
+
+    <select id="selectAll" resultType="java.lang.Integer">
+        select count(*) from user;
+    </select>
+
+    <select id="selectType" resultType="java.lang.Integer">
+        select count(*) from history where open_time like #{datetime} and type=#{i}
+    </select>
+
+    <select id="selectName" resultType="java.util.Map">
+        select open_name as "name", count(*) as "percent" from history where open_name is not null group by open_name_id order by count(*) desc limit 6;
+    </select>
+
+    <select id="selectOpen" resultType="java.lang.Integer">
+        select count(*) from history where type!=3;
+    </select>
+
+    <select id="selectGroup" resultType="java.util.Map">
+        select case type
+           when 1 then 'Face recognition'
+           when 2 then 'Administrator authorization'
+           else 'Identification failed'
+           end
+       as "name", count(*) as "value" from history group by type;
+    </select>
+
+    <select id="selectInfo" resultType="java.util.Map">
+        select case
+                   when u.name is null then '-'
+                   else u.name
+                   end     as 'name',
+                case u.login_auth
+                    when 1 then 'possess'
+                    when 0 then 'Not owned'
+                    else '-'
+                    end     as 'loginAuth',
+                case u.open_auth
+                    when 1 then 'possess'
+                    when 0 then 'Not owned'
+                    else '-'
+                    end     as 'openAuth',
+                case h.type
+                    when 1 then 'identify'
+                    when 2 then 'authorization'
+                    else 'fail'
+                    end     as 'type',
+                DATE_FORMAT(h.open_time, '%Y-%m-%d') as 'openTime'
+        from history h
+                 left join user u on u.id = h.open_name_id
+        order by h.open_time desc
+            limit 12;
+    </select>
+
+</mapper>

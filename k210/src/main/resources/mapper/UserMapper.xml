@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.k210.licj.k210.mapper.UserMapper">
+
+    <insert id="insertUser" parameterType="com.k210.licj.k210.pojo.entity.UserEntity">
+        insert into user(username, password, name, create_time, update_time) values(
+                 #{username},
+                 #{password},
+                 #{name},
+                 now(),
+                 now()
+             );
+    </insert>
+
+    <insert id="insertHistory">
+        insert into user_history(update_name1, update_name1_id, update_name2, update_name2_id, update_time, last_auth, now_auth, type)
+        values(#{map.updateName1},#{map.updateName1Id},#{map.updateName2},#{map.updateName2Id},now(),#{map.lastAuth},#{map.nowAuth}, #{map.type});
+    </insert>
+
+    <update id="updateTime">
+        update user set update_time=now() where id=#{id};
+    </update>
+
+    <update id="update">
+        update user
+        <set>
+            <if test="name!=null and name!=''">name=#{name},</if>
+            <if test="picture!=null and picture!=''">picture=#{picture},</if>
+            <if test="password!=null and password!=''">password=#{password},</if>
+        </set>
+        where id=#{id};
+    </update>
+
+    <update id="change">
+        update user set ${map.type} = #{map.auth} where id = #{map.updateName2Id}
+    </update>
+
+    <select id="selectUser" resultType="com.k210.licj.k210.pojo.entity.UserEntity" parameterType="java.lang.String">
+        select id, username,password,name, open_auth as "openAuth", login_auth as "loginAuth",create_time as "createTime", update_time as "updateTime",picture  from user where username=#{username};
+    </select>
+
+    <select id="selectUpdateName" resultType="com.k210.licj.k210.pojo.entity.UserEntity">
+        select id, username,password,name, open_auth as "openAuth", login_auth as "loginAuth",create_time as "createTime", update_time as "updateTime",picture  from user where id=#{id};
+    </select>
+
+    <select id="select" resultType="com.k210.licj.k210.pojo.entity.UserEntity">
+        select id, username, password, name, open_auth as "openAuth",login_auth "loginAuth", create_time as "createTime", update_time as "updateTime", picture from user
+        where 1=1
+        <if test="username!=null and username!=''">and username=#{username}</if>
+        <if test="name!=null and name!=''">and name=#{name}</if>
+        <if test="openAuth!=null">and open_auth=#{openAuth}</if>
+        <if test="loginAuth!=null">and login_auth=#{loginAuth}</if>
+        <if test="createTime!=null and createTime!=''">and create_time like #{createTime}</if>
+        <if test="updateTime!=null and updateTime!=''">and update_time like #{updateTime}</if>
+    </select>
+
+    <select id="selectUserName" resultType="com.k210.licj.k210.pojo.vo.UserArrVO">
+        select id, name from user;
+    </select>
+
+    <select id="selecttimeLine" resultType="com.k210.licj.k210.pojo.vo.TimelineListVO">
+        select update_name1 as "updateName1", update_name2 as "updateName2", update_time as "updateTime", last_auth as "lastAuth", now_auth as "nowAuth", type from user_history
+        where 1=1
+        <if test="updateName1Id!=null and updateName1Id!=''">and update_name1_id=#{updateName1Id}</if>
+        <if test="updateName2Id!=null and updateName2Id!=''">and update_name2_id=#{updateName2Id}</if>
+        <if test="updateTime!=null and updateTime!=''">and update_time like #{updateTime}</if>
+    </select>
+
+</mapper>

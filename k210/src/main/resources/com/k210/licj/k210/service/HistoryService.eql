@@ -1,0 +1,14 @@
+--[queryInfo]
+select id, open_name as "openName",open_name_id as "openNameId", type, picture, open_time as "openTime" from history
+-- trim prefix=WHERE prefixOverrides=AND
+    -- isNotBlank openNameId
+       open_name_id=#openNameId#
+    -- end
+    -- isNotBlank type
+       type=#type#
+    -- end
+    -- isNotBlank openTime
+       open_time='#openTime#'
+    -- end
+-- end
+

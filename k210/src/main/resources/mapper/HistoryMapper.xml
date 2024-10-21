@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.k210.licj.k210.mapper.HistoryMapper">
+
+    <select id="select" resultType="com.k210.licj.k210.pojo.vo.HistoryListVO" parameterType="com.k210.licj.k210.pojo.dto.HistorySelectDTO">
+        select id, open_name as "openName",open_name_id as "openNameId", type, picture, open_time as "openTime" from history
+        where 1=1
+        <if test="openNameId!=null">
+            and open_name_id=#{openNameId}
+        </if>
+        <if test="type!=null">
+            and type=#{type}
+        </if>
+        <if test="openTime!=''">
+            and open_time like #{openTime}
+        </if>
+    </select>
+
+</mapper>

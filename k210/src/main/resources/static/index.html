@@ -1,0 +1,585 @@
+<!doctype html>
+<html>
+<head>
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>Big data visualization</title>
+    <link type="text/css" href="css/public.css" rel="stylesheet">
+    <link type="text/css" href="css/icon.css" rel="stylesheet">
+    <link type="text/css" href="css/index.css" rel="stylesheet">
+    <script src="js/vue.js"></script>
+    <script type="text/javascript">
+        document.documentElement.style.fontSize = document.documentElement.clientWidth / 768 * 100 + 'px';
+    </script>
+    <script src="js/axios.min.js"></script>
+    <script src="js/echarts.min.js"></script>
+</head>
+<style>
+    .abc {
+
+    }
+
+</style>
+
+<body>
+<div class="bg" id="bg">
+    <div class="title">Data visualization</div>
+    <div class="leftMain">
+        <div class="leftMain_top">
+            <div class="leftMain_topIn">
+                <ul>
+                    <li v-for="item in topList">
+                        <div class="liIn">
+                            <h3>{{item.title}}</h3>
+                            <p class="shu"><span class="shu1">{{item.number}}</span><i>person</i></p>
+                            <div class="zi"><span class="span1">Proportion：{{item.percent}} %</span></div>
+                            <span class="border_bg_leftTop"></span>
+                            <span class="border_bg_rightTop"></span>
+                            <span class="border_bg_leftBottom"></span>
+                            <span class="border_bg_rightBottom"></span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="leftMain_middle">
+            <div class="leftMain_middle_left">
+                <div class="leftMain_middle_leftIn">
+                    <h3>The total number of daily openings in the last 15 days</h3>
+                    <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+                    <div class="biaoge" style="width:100%; height:25vh" id="chartmain"></div>
+                    <span class="border_bg_leftTop"></span>
+                    <span class="border_bg_rightTop"></span>
+                    <span class="border_bg_leftBottom"></span>
+                    <span class="border_bg_rightBottom"></span>
+                </div>
+            </div>
+            <div class="leftMain_middle_right">
+                <div class="leftMain_middle_rightIn">
+                    <h3>The total number of times the user was opened</h3>
+                    <div class="biaoge biaoge_pai" style="width:100%; height:25vh">
+                        <div class="biaoge_paiIn">
+                            <ul v-if='numList.length>0'>
+                                <li>
+                                    <div class="liIn">
+                                        <div class="liIn_left" ><span class="bot"></span><span
+                                                class="zi">{{numList[0].name}}</span></div>
+                                        <div class="liIn_line">
+                                            <div class="line_lineIn" :style="{width: numList[0].percent}"></div>
+                                        </div>
+                                        <p class="num">{{numList[0].percent}}</p>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="liIn liIn2">
+                                        <div class="liIn_left"><span class="bot"></span><span
+                                                class="zi">{{numList[1].name}}</span></div>
+                                        <div class="liIn_line">
+                                            <div class="line_lineIn" :style="{width: numList[1].percent}"></div>
+                                        </div>
+                                        <p class="num">{{numList[1].percent}}</p>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="liIn liIn3">
+                                        <div class="liIn_left"><span class="bot"></span><span
+                                                class="zi">{{numList[2].name}}</span></div>
+                                        <div class="liIn_line">
+                                            <div class="line_lineIn" :style="{width: numList[2].percent}"></div>
+                                        </div>
+                                        <p class="num">{{numList[2].percent}}</p>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="liIn liIn4">
+                                        <div class="liIn_left"><span class="bot"></span><span
+                                                class="zi">{{numList[3].name}}</span></div>
+                                        <div class="liIn_line">
+                                            <div class="line_lineIn" :style="{width: numList[3].percent}"></div>
+                                        </div>
+                                        <p class="num">{{numList[3].percent}}</p>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="liIn liIn5">
+                                        <div class="liIn_left"><span class="bot"></span><span
+                                                class="zi">{{numList[4].name}}</span></div>
+                                        <div class="liIn_line">
+                                            <div class="line_lineIn" :style="{width: numList[4].percent}"></div>
+                                        </div>
+                                        <p class="num">{{numList[4].percent}}</p>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="liIn liIn6">
+                                        <div class="liIn_left"><span class="bot"></span><span
+                                                class="zi">{{numList[5].name}}</span></div>
+                                        <div class="liIn_line">
+                                            <div class="line_lineIn" :style="{width: numList[5].percent}"></div>
+                                        </div>
+                                        <p class="num">{{numList[5].percent}}</p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <span class="border_bg_leftTop"></span>
+                    <span class="border_bg_rightTop"></span>
+                    <span class="border_bg_leftBottom"></span>
+                    <span class="border_bg_rightBottom"></span>
+                </div>
+            </div>
+        </div>
+        <div class="leftMain_middle">
+            <div class="leftMain_middle_left">
+                <div class="leftMain_middle_leftIn">
+                    <h3>Daily opening in the past 15 days</h3>
+                    <div class="biaoge" style="width:100%; height:25vh" id="chartmain_zhe"></div>
+                    <span class="border_bg_leftTop"></span>
+                    <span class="border_bg_rightTop"></span>
+                    <span class="border_bg_leftBottom"></span>
+                    <span class="border_bg_rightBottom"></span>
+                </div>
+            </div>
+            <div class="leftMain_middle_right">
+                <div class="leftMain_middle_rightIn">
+                    <h3>Percentage of open cases</h3>
+                    <div class="biaoge" style="width:100%; height:25vh" id="chartmain_bing"></div>
+                    <span class="border_bg_leftTop"></span>
+                    <span class="border_bg_rightTop"></span>
+                    <span class="border_bg_leftBottom"></span>
+                    <span class="border_bg_rightBottom"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="rightMain">
+        <div class="rightMain_top">
+            <div class="rightMain_topIn">
+                <h3>Live broadcast</h3>
+                <div class="biaoge biaoge_bi" style="width:100%; height:30vh">
+                    <div style="height: 200px;margin-top: 10px">
+                        <img style="background-color: hsl(0, 0%, 25%);height: 150px;width: 150px" src="http://192.168.0.150:8080/">
+
+                    </div>
+                    <el-button @click="open()" type="primary" style="align-content: center">open</el-button>
+                </div>
+                <span class="border_bg_leftTop"></span>
+                <span class="border_bg_rightTop"></span>
+                <span class="border_bg_leftBottom"></span>
+                <span class="border_bg_rightBottom"></span>
+            </div>
+        </div>
+        <div class="rightMain_bottom">
+            <div class="rightMain_bottomIn">
+                <h3>Recent openings</h3>
+                <div class="biaoge biaoge_list" style="width:100%; height:36vh">
+                    <div class="biaoge_listIn">
+                        <ul class="ul_title">
+                            <li>name</li>
+                            <li>Login</li>
+                            <li>Permissions</li>
+                            <li>Manner</li>
+                            <li>Time</li>
+                        </ul>
+                        <div class="ul_list">
+                            <div class="ul_listIn">
+                                <ul class="ul_con" v-for="item in tableList">
+                                    <li>{{item.name}}</li>
+                                    <li>{{item.loginAuth}}</li>
+                                    <li>{{item.openAuth}}</li>
+                                    <li>{{item.type}}</li>
+                                    <li>{{item.openTime}}</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <span class="border_bg_leftTop"></span>
+                <span class="border_bg_rightTop"></span>
+                <span class="border_bg_leftBottom"></span>
+                <span class="border_bg_rightBottom"></span>
+            </div>
+        </div>
+    </div>
+    <div style="clear:both;"></div>
+</div>
+
+
+<script>
+    // 将vue挂载到id为home的根元素上
+    var v = new Vue({
+        el: "#bg",
+        data() {
+            return {
+                topList: [
+                    {title: "Number of permissions", number: '', percent: ""},
+                    {title: "Number of permissions enabled", number: '', percent: ""},
+                    {title: "Number of login permissions", number: '', percent: ""},
+                    {title: "Number of login privileges", number: '', percent: ""}
+                ],
+                numList: [],
+                tableList: [],
+                shibie: [],
+                admin: [],
+                dataAxis: [],
+                dataNum: [],
+                yMax: 500,
+                dataShadow: [],
+                myChart1: null,
+                myChart2: null,
+                myChart3: null,
+                option3: {
+                    title: {
+                        // text: 'Statistics on the situation',
+                        text: '',
+                        subtext: '',
+                        left: 'right',
+                        textStyle: {
+                            color: '#fff',
+                            fontSize: 12
+                        }
+                    },
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: '{a} <br/>{b} : {c} ({d}%)'
+                    },
+                    legend: {
+                        // orient: 'vertical',
+                        // top: 'middle',
+                        type: 'scroll',
+                        orient: 'vertical',
+                        right: 10,
+                        top: 160,
+                        bottom: 20,
+                        left: 'right',
+                        data: ['Face recognition', 'Administrator authorization', 'Identification failed'],
+                        textStyle: {
+                            color: '#fff',
+                            fontSize: 12
+                        }
+
+                    },
+                    grid: {
+                        x: '-10%',
+                        y: 40,
+                        x2: 20,
+                        y2: 20,
+                    },
+                    color: ['#09d0fb', '#f88cfb', '#95f8fe'],
+                    series: [
+                        {
+                            type: 'pie',
+                            radius: '65%',
+                            center: ['50%', '50%'],
+                            selectedMode: 'single',
+                            data: [],
+                            emphasis: {
+                                itemStyle: {
+                                    shadowBlur: 10,
+                                    shadowOffsetX: 0,
+                                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                }
+                            }
+                        }
+                    ]
+                },
+            };
+        },
+        mounted() {
+            this.setEcharts()
+            // this.updateData()
+        },
+        methods: {
+            async setEcharts() {
+                await this.init1()
+                await this.updateData()
+                this.setLineEchart()
+                this.setPieEchart()
+            },
+            open(){
+                axios.post("/open").then(function (response) {
+                    if(response.data.code===1){
+                        v.$message.success("success");
+                    }else{
+                        v.$message.error(response.data.msg);
+                    }
+                });
+            },
+            setBarEchart() {
+                console.log(this.dataAxis,this.dataNum)
+                var option = {
+                    title: {
+                        text: '',
+                        subtext: ''
+                    },
+                    grid: {
+                        x: 40,
+                        y: 40,
+                        x2: 20,
+                        y2: 20,
+
+                    },
+                    xAxis: {
+                        data: this.dataAxis,
+                        axisLabel: {
+                            /*inside: true,*/
+                            interval: 0,
+                            textStyle: {
+                                color: '#fff',
+                                fontSize: 12
+
+                            }
+                        },
+                        axisTick: {
+                            show: false,
+                        },
+                        axisLine: {
+                            show: true,
+                            symbol: ['none', 'arrow'],
+                            symbolOffset: 12,
+                            lineStyle: {
+                                color: '#fff',
+                            }
+                        },
+                        z: 10
+                    },
+                    yAxis: {
+                        type: 'value',
+                        name: 'unit:times',
+                        axisLine: {
+                            show: true,
+                            symbol: ['none', 'arrow'],
+                            symbolOffset: 12,
+                            lineStyle: {
+                                color: '#fff',
+                            }
+                        },
+                        axisTick: {
+                            show: false
+                        },
+                        axisLabel: {
+                            textStyle: {
+                                color: '#fff',
+                                fontSize: 12
+                            }
+                        }
+                    },
+
+                    dataZoom: [
+                        {
+                            type: 'inside'
+                        }
+                    ],
+                    series: [
+                        { // For shadow
+                            type: 'bar',
+                            itemStyle: {
+                                color: 'rgba(0,0,0,0.05)'
+                            },
+                            barGap: '-100%',
+                            barCategoryGap: '40%',
+                            animation: false
+                        },
+                        {
+                            type: 'bar',
+                            itemStyle: {
+                                color: new echarts.graphic.LinearGradient(
+                                    0, 0, 0, 1,
+                                    [
+                                        {offset: 0, color: '#0efdff'},
+                                        {offset: 0.5, color: '#188df0'},
+                                        {offset: 1, color: '#188df0'}
+                                    ]
+                                )
+                            },
+                            emphasis: {
+                                itemStyle: {
+                                    color: new echarts.graphic.LinearGradient(
+                                        0, 0, 0, 1,
+                                        [
+                                            {offset: 0, color: '#2378f7'},
+                                            {offset: 0.7, color: '#2378f7'},
+                                            {offset: 1, color: '#0efdff'}
+                                        ]
+                                    )
+                                }
+                            },
+                            data: this.dataNum
+                        }
+                    ]
+                };
+                var myChart = echarts.init(document.getElementById('chartmain'));
+                // 使用刚指定的配置项和数据显示图表。
+                myChart.setOption(option);
+            },
+            setLineEchart() {
+                let option2 = {
+                    title: {
+                        text: ''
+                    },
+                    tooltip: {
+                        trigger: 'axis'
+                    },
+                    legend: {
+                        textStyle: {
+                            color: '#fff',
+                            fontSize: 12,
+                        },
+                        right: '10%',
+                        data: ['Face recognition is turned on', 'Manually enabled by the administrator']
+                    },
+                    grid: {
+                        x: 40,
+                        y: 40,
+                        x2: 20,
+                        y2: 20,
+                    },
+                    // toolbox: {
+                    //     feature: {
+                    //         //saveAsImage: {}
+                    //     }
+                    // },
+                    xAxis: {
+                        type: 'category',
+                        boundaryGap: false,
+                        axisLabel: {
+                            /*inside: true,*/
+                            interval: 0,
+                            textStyle: {
+                                color: '#fff',
+                                fontSize: 12,
+                            }
+                        },
+                        axisTick: {
+                            show: false,
+                        },
+                        axisLine: {
+                            show: true,
+                            symbol: ['none', 'arrow'],
+                            symbolOffset: 12,
+                            lineStyle: {
+                                color: '#fff',
+                            }
+                        },
+                        data: this.dataAxis,
+                    },
+                    yAxis: {
+                        type: 'value',
+                        axisLine: {
+                            show: true,
+                            symbol: ['none', 'arrow'],
+                            symbolOffset: 12,
+                            lineStyle: {
+                                color: '#fff',
+                            }
+                        },
+                        axisTick: {
+                            show: false
+                        },
+                        axisLabel: {
+                            textStyle: {
+                                color: '#fff',
+                                fontSize: 12
+                            }
+                        }
+                    },
+                    series: [
+                        {
+                            name: 'Face recognition is turned on',
+                            type: 'line',
+                            data: this.shibie,
+                            itemStyle: {
+                                normal: {
+                                    color: "#0efdff",//折线点的颜色
+                                    lineStyle: {
+                                        color: "#0efdff",//折线的颜色
+                                        width: 2,
+                                    }
+                                },
+                            }
+                        },
+                        {
+                            name: 'Manually enabled by the administrator',
+                            type: 'line',
+                            data: this.admin,
+                            itemStyle: {
+                                normal: {
+                                    color: "#c23531",//折线点的颜色
+                                    lineStyle: {
+                                        color: "#c23531",//折线的颜色
+                                        width: 2,
+                                    }
+                                },
+                            }
+                        },
+                    ]
+                };
+                this.myChart2 = echarts.init(document.getElementById('chartmain_zhe'));
+                this.myChart2.setOption(option2);
+            },
+            setPieEchart() {
+                this.myChart3 = echarts.init(document.getElementById('chartmain_bing'));
+                this.myChart3.setOption(this.option3);
+            },
+            async init1() {
+                const response = await axios.get("/echarts/graph")
+                if (response.data.code == 1) {
+                    this.dataAxis = response.data.data.date;
+                    this.dataNum = response.data.data.total;
+                    this.shibie = response.data.data.shibie;
+                    this.admin = response.data.data.admin;
+                }
+                this.setBarEchart()
+
+            },
+            async updateData() {
+                const response = await axios.get("echarts/bing")
+                if (response.data.code == 1) {
+                    this.option3.series[0].data = response.data.data;
+                }
+                axios.get("/echarts/top").then((response) => {
+                    if (response.data.code == 1) {
+                        for (var i = 0; i < 4; i++) {
+                            this.topList[i].number = response.data.data.num[i];
+                            this.topList[i].percent = response.data.data.percent[i];
+                        }
+                    }
+                });
+
+                axios.get("echarts/name").then((response) => {
+                    if (response.data.code == 1) {
+                        this.numList = response.data.data;
+                        // this.numList.map((item,index)=>{
+                        //     return{
+                        //         ...item,
+                        //         class:`line${index}`
+                        //     }
+                        // })
+                    }
+                });
+
+
+                this.myChart3 = echarts.init(document.getElementById('chartmain_bing'));
+                this.myChart3.setOption(this.option3);
+
+                axios.get("echarts/table").then((response) => {
+                    if (response.data.code == 1) {
+                        this.tableList = response.data.data;
+                    }
+                });
+            },
+        },
+        created() {
+
+        },
+    });
+</script>
+
+</body>
+</html>

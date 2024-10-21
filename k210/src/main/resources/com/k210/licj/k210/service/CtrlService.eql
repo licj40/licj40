@@ -1,0 +1,26 @@
+-- [insertImage]
+insert into history(picture) values ('##');
+
+-- [selectUser]
+select id,username,name,auth,picture from user;
+
+
+-- [selectNameById]
+select id, username, password, name, auth, create_time, update_time, picture from user where id=##
+
+
+-- [insert]
+insert into history(open_name, open_name_id, type, picture, open_time) values ('#openName#',#openNameId#,#type#,'#picture#','#openTime#');
+
+
+-- [insertError]
+insert into history(type, picture, open_time) values (#type#,'#picture#','#openTime#');
+
+
+-- [selectFirst]
+select id, open_name, open_name_id, type, picture, open_time from history where type=1 order by open_time desc limit 1;
+
+
+
+
+

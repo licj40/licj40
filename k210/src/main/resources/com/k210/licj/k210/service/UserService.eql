@@ -1,0 +1,93 @@
+-- [insertUser]
+insert into user(username, password, name, auth, create_time, update_time) values(
+    '#username#',
+    '#password#',
+    '#name#',
+    #auth#,
+    '#createTime#',
+    '#updateTime#'
+);
+
+
+--[selectUser]
+select id, username, password, name, auth, create_time as "createTime", update_time as "updateTime", picture from user where username='##';
+
+
+--[queryInfo]
+select id, username, password, name, auth, create_time as "createTime", update_time as "updateTime", picture from user
+-- trim prefix=WHERE prefixOverrides=AND
+        -- isNotBlank username
+        username='#username#'
+        -- end
+        -- isNotBlank name
+        name='#name#'
+        -- end
+        -- isNotBlank auth
+        auth=#auth#
+        -- end
+        -- isNotBlank createTime
+        create_time='#createTime#'
+        -- end
+        -- isNotBlank updateTime
+        update_time='#updateTime#'
+        -- end
+--end
+
+
+--[update]
+UPDATE user
+-- trim prefix=SET suffixOverrides=,
+        -- isNotBlank name
+        name='#name#',
+        -- end
+        -- isNotBlank picture
+        picture='#picture#',
+        -- end
+        -- isNotBlank password
+        password='#password#',
+        -- end
+-- end
+where id=#id#;
+
+
+--[change1]
+update user set auth=1 where id=##;
+
+
+--[change0]
+update user set auth=0 where id=##;
+
+
+--[updateTime]
+update user set update_time='#updateTime#' where id=#id#;
+
+
+--[selectUserName]
+select id, name from user;
+
+
+--[selectUpdateName]
+select id, username, password, name, auth, create_time, update_time, picture from user where id=##
+
+
+--[insertHistory]
+insert into user_history(update_name1, update_name1_id, update_name2, update_name2_id, update_time, last_auth, now_auth)
+values('#updateName1#',#updateName1Id#,'#updateName2#',#updateName2Id#,'#updateTime#',#lastAuth#,#nowAuth#);
+
+
+--[queryTimelineList]
+select update_name1 as "updateName1",update_name2 as "updateName2",update_time as "updateTime",last_auth as "lastAuth",now_auth as "nowAuth" from user_history
+-- trim prefix=WHERE prefixOverrides=AND
+    -- isNotBlank updateName1Id
+       update_name1_id=#updateName1Id#
+    -- end
+    -- isNotBlank updateName2Id
+           update_name2_id=#updateName2Id#
+    -- end
+    -- isNotBlank updateTime
+           update_time='#updateTime#'
+    -- end
+-- end
+
+
+

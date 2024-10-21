@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.k210.licj.k210.mapper.CtrlMapper">
+
+    <insert id="insert">
+        insert into history(open_name, open_name_id, type, picture, open_time) values (#{mapResult.openName},#{mapResult.openNameId},#{mapResult.type},#{mapResult.picture},now());
+    </insert>
+
+    <insert id="insertError" parameterType="java.util.Map">
+        insert into history(type, picture, open_time) values (#{mapResult.type},#{mapResult.picture},#{mapResult.openTime});
+    </insert>
+
+    <select id="selectUser" resultType="java.util.Map">
+        select id,username,name,open_auth,picture from user;
+    </select>
+
+    <select id="selectNameById" resultType="java.lang.String">
+        select id, username, password, name, auth, create_time, update_time, picture from user where id=#{id}
+    </select>
+
+    <select id="selectFirst" resultType="java.util.Map">
+        select id, open_name, open_name_id, type, picture, open_time from history where type=1 order by open_time desc limit 1;
+    </select>
+
+</mapper>
